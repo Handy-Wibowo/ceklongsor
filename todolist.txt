@@ -1,0 +1,45 @@
+
+A prediksi web
+- bikin list fitur paling berpengaruh (DONE)
+- tampilan web (bootsrap)
+    - navbar
+        - home
+        - form
+        - cara pengukuran
+        - pricing
+        - login
+        
+    - hero 
+    - Form (digabung + hero)
+    - cara pengukuran tiap kolom
+    - pricing
+    - footer
+
+    - ubah ke bahasa indonesia
+
+- isi web
+    - panduan cara pakai
+    - cara pengukuran
+- konek py ke php (SCRAPPED)
+- hosting
+- database ( scrapped)
+
+
+B. Produk
+- fitur apa yang mau dibikin berbayar 
+    - perlihatkan semua hasil (4 hasil)
+    - perlihatkan semua fitur berpengaruh
+- fitur apa yang mau dibikin gratis
+    - perlihatkan 1 hasil saja
+-  target market
+    - orang awam (dengan alat perhitungan cuaca atau rakitan sendiri https://id.wikihow.com/Mengukur-Curah-Hujan)
+    - orang expert di bidang atau kantor instansi pemerintahan yang menangani tanah longsor
+- strategi pemasaran
+    - iklan google
+    - iklan youtube
+    - promosi ke instansi pemerintahan
+- strategi pengembangan produk
+    - penggabungan hasil, daripada 4 hasil
+    - mengembangkan data yang ada, dengan data baru jika aplikasi banyak pengguna dan data baru banyak yang masuk
+    - 
+

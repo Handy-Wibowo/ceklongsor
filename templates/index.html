@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Prediksi Tanah Longsor</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
+  <style>
+    .feature-impacts .list-group-item.positive {
+      border-left: 5px solid var(--bs-danger);
+    }
+    .feature-impacts .list-group-item.negative {
+      border-left: 5px solid var(--bs-success);
+    }
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 70px; /* Offset for fixed navbar */
+    }
+    .hero-section {
+      position: relative;
+      padding: 6rem 0;
+      background-image: url("{{ url_for('static', filename='Landslide_in_Cusco,_Peru_-_2018.jpg') }}");
+      background-size: cover;
+      background-position: center;
+      color: white;
+    }
+    .hero-section::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5); /* Black overlay with 50% opacity */
+      z-index: 1;
+    }
+    .hero-section .container {
+      position: relative;
+      z-index: 2;
+    }
+    #measurement-guide-section {
+      background-color: #18230F;
+      padding: 2rem 0; /* Add some padding for better visual */
+      color: white; /* Change text color to white for better contrast */
+    }
+    #measurement-guide {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg sticky-top shadow-sm" style="background-color: #1F7D53;" data-bs-theme="dark">
+  <div class="container-fluid" style="padding-left: 50px; padding-right: 50px;">
+    <a class="navbar-brand" href="#">CekLongsor</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="margin-left: 50px;">
+        <li class="nav-item">
+          <a class="nav-link" href="#hero">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#input-form-section">Masukkan Data</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#prediction-results-section">Prediksi</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#measurement-guide-section">Cara Pengukuran</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#pricing-section">Harga</a>
+        </li>
+      </ul>
+      <div class="d-flex align-items-center">
+        {% if current_user.is_authenticated %}
+          <span class="navbar-text me-3">Selamat datang, {{ current_user.id }}!</span>
+          <a href="{{ url_for('logout') }}" class="btn btn-outline-light">Keluar</a>
+        {% else %}
+          <a href="{{ url_for('login') }}" class="btn btn-outline-light">Masuk</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Hero Section -->
+<div id="hero" class="hero-section">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-5 text-center text-lg-start mb-5 mb-lg-0">
+        <h1 class="display-3 fw-bold">CekLongsor</h1>
+        <p class="lead">Cegah dan antisipasi risiko tanah longsor di sekitar Anda dengan analisis prediktif kami.</p>
+      </div>
+      <div class="col-lg-7">
+        <div id="input-form-section">
+          <div class="card shadow-sm text-dark">
+            <div class="card-body p-4">
+              <h2 class="card-title text-center mb-4">Input Prediksi Tanah Longsor</h2>
+              <form id="prediction-form" method="POST" action="{{ url_for('result') }}">
+                <div class="mb-3">
+                  <label for="Rainfall_mm" class="form-label">Curah Hujan (mm)</label>
+                  <input type="number" class="form-control" id="Rainfall_mm" name="Rainfall_mm" step="any" min="50.0361507028" max="299.919102159" placeholder="contoh: 150.5" required value="{{ submitted_inputs.Rainfall_mm if submitted_inputs else '' }}" />
+                </div>
+                <div class="mb-3">
+                  <label for="Slope_Angle" class="form-label">Sudut Kemiringan (derajat)</label>
+                  <input type="number" class="form-control" id="Slope_Angle" name="Slope_Angle" step="any" min="5.0039436145" max="59.9667324336" placeholder="contoh: 35.2" required value="{{ submitted_inputs.Slope_Angle if submitted_inputs else '' }}" />
+                </div>
+                <div class="mb-3">
+                  <label for="Soil_Saturation" class="form-label">Saturasi Tanah</label>
+                  <input type="number" class="form-control" id="Soil_Saturation" name="Soil_Saturation" step="any" min="0.0006522119" max="0.9988312628" placeholder="contoh: 0.65" required value="{{ submitted_inputs.Soil_Saturation if submitted_inputs else '' }}" />
+                </div>
+                <div class="mb-3">
+                  <label for="Vegetation_Cover" class="form-label">Tingkat Vegetasi</label>
+                  <input type="number" class="form-control" id="Vegetation_Cover" name="Vegetation_Cover" step="any" min="0.1000046539" max="0.9998366026" placeholder="contoh: 0.7" required value="{{ submitted_inputs.Vegetation_Cover if submitted_inputs else '' }}" />
+                </div>
+                <div class="mb-3">
+                  <label for="Earthquake_Activity" class="form-label">Aktivitas Gempa</label>
+                  <input type="number" class="form-control" id="Earthquake_Activity" name="Earthquake_Activity" step="any" min="0.0016411578" max="6.4986697355" placeholder="contoh: 2.5" required value="{{ submitted_inputs.Earthquake_Activity if submitted_inputs else '' }}" />
+                </div>
+                <div class="mb-3">
+                  <label for="Proximity_to_Water" class="form-label">Jarak ke Air</label>
+                  <input type="number" class="form-control" id="Proximity_to_Water" name="Proximity_to_Water" step="any" min="0.0006533908" max="1.9996356254" placeholder="contoh: 0.8" required value="{{ submitted_inputs.Proximity_to_Water if submitted_inputs else '' }}" />
+                </div>
+                <div class="row">
+                  <div class="col-md-4 mb-3">
+                    <label for="Soil_Type_Gravel" class="form-label">Jenis Tanah Kerikil</label>
+                    <input type="number" class="form-control" id="Soil_Type_Gravel" name="Soil_Type_Gravel" min="0" max="1" step="1" placeholder="0 atau 1" required value="{{ submitted_inputs.Soil_Type_Gravel if submitted_inputs else '' }}" />
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label for="Soil_Type_Sand" class="form-label">Jenis Tanah Pasir</label>
+                    <input type="number" class="form-control" id="Soil_Type_Sand" name="Soil_Type_Sand" min="0" max="1" step="1" placeholder="0 atau 1" required value="{{ submitted_inputs.Soil_Type_Sand if submitted_inputs else '' }}" />
+                  </div>
+                  <div class="col-md-4 mb-3">
+                    <label for="Soil_Type_Silt" class="form-label">Jenis Tanah Lanau</label>
+                    <input type="number" class="form-control" id="Soil_Type_Silt" name="Soil_Type_Silt" min="0" max="1" step="1" placeholder="0 atau 1" required value="{{ submitted_inputs.Soil_Type_Silt if submitted_inputs else '' }}" />
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 btn-lg mt-3">Prediksi</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="container my-5" style="max-width: 1200px;">
+  {% if submitted_inputs %}
+    {% set translations = {
+        'Rainfall_mm': 'Curah Hujan (mm)',
+        'Slope_Angle': 'Sudut Kemiringan (derajat)',
+        'Soil_Saturation': 'Saturasi Tanah',
+        'Vegetation_Cover': 'Tingkat Vegetasi',
+        'Earthquake_Activity': 'Aktivitas Gempa',
+        'Proximity_to_Water': 'Jarak ke Air',
+        'Soil_Type_Gravel': 'Jenis Tanah Kerikil',
+        'Soil_Type_Sand': 'Jenis Tanah Pasir',
+        'Soil_Type_Silt': 'Jenis Tanah Lanau'
+    } %}
+    <div class="row my-5 justify-content-center">
+      <div class="col-md-5 mb-4">
+        <div class="card h-100">
+          <div class="card-header">
+            Nilai Input yang Dikirim
+          </div>
+          <ul class="list-group list-group-flush">
+            {% for key, val in submitted_inputs.items() %}
+              <li class="list-group-item d-flex justify-content-between align-items-center">
+                {{ translations.get(key, key.replace('_', ' ').title()) }}
+                <span class="badge bg-primary rounded-pill">{{ val }}</span>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      {% if show_interpretation_guide %}
+      <div class="col-md-7 mb-4">
+        <div class="card h-100">
+        <div class="card-header">
+          Cara Menginterpretasikan Hasil
+        </div>
+        <div class="card-body">
+          <p><strong>Prediksi:</strong> Klasifikasi model untuk data input, yaitu 'Berpotensi Longsor' atau 'Berpotensi Tidak Longsor'.</p>
+          <p><strong>Probabilitas:</strong> Estimasi kemungkinan (dari 0 hingga 1) bahwa lokasi tersebut berpotensi longsor.</p>
+          <p><strong>Dampak Fitur:</strong> Penjelasan bagaimana setiap kondisi fitur (misalnya, nilai curah hujan atau jenis tanah) memengaruhi hasil prediksi.</p>
+          <ul class="mt-2">
+            <li><span class="text-success fw-bold">Pengaruh Menurunkan:</span> Fitur ini membuat kemungkinan longsor lebih kecil.</li>
+            <li><span class="text-danger fw-bold">Pengaruh Meningkatkan:</span> Fitur ini membuat kemungkinan longsor lebih besar.</li>
+            <li><em>Kekuatan</em> (sedikit, cukup, sangat) menggambarkan seberapa besar pengaruh fitur terhadap prediksi.</li>
+            <li>Kondisi fitur ditampilkan dalam format yang mudah dibaca, contohnya: <strong>"Curah Hujan (mm) antara 150 dan 200"</strong> atau <strong>"Jenis tanah adalah Pasir"</strong>.</li>
+          </ul>
+          <p class="card-text"><small class="text-muted">Penjelasan ini membantu Anda memahami faktor-faktor mana yang paling signifikan dalam menentukan risiko longsor menurut model.</small></p>
+        </div>
+      </div>
+      </div>
+      {% endif %}
+    </div>
+  {% endif %}
+
+  {% if results %}
+  <div id="prediction-results-section" style="max-width: 800px; margin-left: auto; margin-right: auto; background-color: #255F38; padding: 2rem; border-radius: 8px;">
+    <h3 class="text-center my-4 text-white">Hasil Prediksi</h3>
+    {% if user_role == 'premium' %}
+      <div class="accordion" id="predictionAccordion">
+        {% for model_name, pred in results.items() %}
+          <div class="accordion-item">
+            <h2 class="accordion-header" id="heading{{ loop.index }}">
+              <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="false" aria-controls="collapse{{ loop.index }}">
+                Hasil Prediksi {{ loop.index }} ({{ model_name }}):&nbsp;
+                <strong class="{% if 'Tidak' in pred.label %}text-success{% else %}text-danger{% endif %}">{{ pred.label }}</strong>
+                &nbsp;|&nbsp;
+                Probabilitas: {{ "%.4f"|format(pred.proba) }}
+              </button>
+            </h2>
+            <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" aria-labelledby="heading{{ loop.index }}" data-bs-parent="#predictionAccordion">
+              <div class="accordion-body">
+                {% if pred.feature_impacts %}
+                  <div class="mb-4">
+                    <h5>Faktor yang Menurunkan Kemungkinan Longsor:</h5>
+                    <ul class="list-group feature-impacts mt-2">
+                      {% for item in pred.feature_impacts %}
+                        {% if item.contribution < 0 %}
+                          <li class="list-group-item negative">
+                            <strong>{{ item.feature }}</strong><br />
+                            <em class="text-muted">{{ item.interpretation }}</em>
+                          </li>
+                        {% endif %}
+                      {% endfor %}
+                      {% if not (pred.feature_impacts | selectattr('contribution', 'lt', 0) | list) %}
+                        <li class="list-group-item text-muted">Tidak ada faktor yang secara signifikan menurunkan kemungkinan longsor.</li>
+                      {% endif %}
+                    </ul>
+                  </div>
+                  <div>
+                    <h5>Faktor yang Meningkatkan Kemungkinan Longsor:</h5>
+                    <ul class="list-group feature-impacts mt-2">
+                      {% for item in pred.feature_impacts %}
+                        {% if item.contribution > 0 %}
+                          <li class="list-group-item positive">
+                            <strong>{{ item.feature }}</strong><br />
+                            <em class="text-muted">{{ item.interpretation }}</em>
+                          </li>
+                        {% endif %}
+                      {% endfor %}
+                      {% if not (pred.feature_impacts | selectattr('contribution', 'gt', 0) | list) %}
+                        <li class="list-group-item text-muted">Tidak ada faktor yang secara signifikan meningkatkan kemungkinan longsor.</li>
+                      {% endif %}
+                    </ul>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="card">
+        <div class="list-group list-group-flush">
+          {% for model_name, pred in results.items() %}
+            <div class="list-group-item">
+              <h4 class="card-title">{{ model_name }}</h4>
+              <p class="card-text fs-5">Prediksi: <strong class="{% if 'Tidak' in pred.label %}text-success{% else %}text-danger{% endif %}">{{ pred.label }}</strong></p>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+  {% endif %}
+  
+  <div id="measurement-guide-section" class="mt-5"> {# Added mt-5 for spacing from previous section #}
+  <div class="container"> {# Moved container inside to allow full-width background #}
+  <h3 class="text-center my-4 text-white">Panduan Pengukuran Input</h3> {# Changed text color to white for contrast #}
+  <div class="accordion" id="measurement-guide">
+    <!-- Item 1: Curah Hujan -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingRainfall">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseRainfall" aria-expanded="false" aria-controls="collapseRainfall">
+          Curah Hujan (mm)
+        </button>
+      </h2>
+      <div id="collapseRainfall" class="accordion-collapse collapse" aria-labelledby="headingRainfall" data-bs-parent="#measurement-guide">
+        <div class="accordion-body">
+          <strong>Cara Mengukur:</strong> Gunakan alat penakar hujan (ombrometer) untuk mengukur jumlah hujan dalam milimeter (mm) selama periode 24 jam terakhir. Data ini seringkali bisa didapatkan dari stasiun meteorologi terdekat (misalnya, BMKG).
+          <br>
+          <strong>Nilai Input:</strong> Masukkan total curah hujan dalam satuan milimeter. Contoh: <code>150.5</code>.
+        </div>
+      </div>
+    </div>
+
+    <!-- Item 2: Sudut Kemiringan -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingSlope">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSlope" aria-expanded="false" aria-controls="collapseSlope">
+          Sudut Kemiringan (derajat)
+        </button>
+      </h2>
+      <div id="collapseSlope" class="accordion-collapse collapse" aria-labelledby="headingSlope" data-bs-parent="#measurement-guide">
+        <div class="accordion-body">
+          <strong>Cara Mengukur:</strong> Gunakan klinometer atau aplikasi ponsel pintar yang memiliki fitur inklinometer. Berdiri di kaki lereng dan bidik ke puncak lereng untuk membaca sudut dalam derajat. Untuk hasil yang lebih akurat, lakukan beberapa pengukuran di titik berbeda dan ambil rata-ratanya.
+          <br>
+          <strong>Nilai Input:</strong> Masukkan sudut kemiringan dalam satuan derajat. Contoh: <code>35.2</code>.
+        </div>
+      </div>
+    </div>
+
+    <!-- Item 3: Saturasi Tanah -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingSaturation">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSaturation" aria-expanded="false" aria-controls="collapseSaturation">
+          Saturasi Tanah
+        </button>
+      </h2>
+      <div id="collapseSaturation" class="accordion-collapse collapse" aria-labelledby="headingSaturation" data-bs-parent="#measurement-guide">
+        <div class="accordion-body">
+          <strong>Definisi:</strong> Ini adalah rasio volume air terhadap total volume pori-pori dalam tanah, dengan rentang nilai dari 0 (tanah kering) hingga 1 (tanah jenuh air).
+          <br>
+          <strong>Cara Mengukur:</strong> Pengukuran langsung memerlukan sensor kelembaban tanah. Sebagai alternatif, nilai ini dapat diperkirakan berdasarkan intensitas hujan terkini dan kemampuan tanah menahan air. Tanah yang terasa sangat basah atau becek mendekati nilai 1.
+          <br>
+          <strong>Nilai Input:</strong> Masukkan nilai antara 0 dan 1. Contoh: <code>0.65</code>.
+        </div>
+      </div>
+    </div>
+
+    <!-- Item 4: Tingkat Vegetasi -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingVegetation">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseVegetation" aria-expanded="false" aria-controls="collapseVegetation">
+          Tingkat Vegetasi
+        </button>
+      </h2>
+      <div id="collapseVegetation" class="accordion-collapse collapse" aria-labelledby="headingVegetation" data-bs-parent="#measurement-guide">
+        <div class="accordion-body">
+          <strong>Definisi:</strong> Ini adalah rasio dari area permukaan tanah yang tertutup oleh vegetasi (pohon, rumput, semak), dengan rentang nilai dari 0 (tanah gundul) hingga 1 (tertutup vegetasi sepenuhnya).
+          <br>
+          <strong>Cara Mengukur:</strong> Dapat diestimasi secara visual. Amati area lereng dan perkirakan persentase tutupan vegetasinya, lalu ubah ke dalam bentuk desimal.
+          <br>
+          <strong>Nilai Input:</strong> Masukkan nilai antara 0 dan 1. Contoh: <code>0.7</code> untuk 70% tutupan.
+        </div>
+      </div>
+    </div>
+
+    <!-- Item 5: Aktivitas Gempa -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingEarthquake">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseEarthquake" aria-expanded="false" aria-controls="collapseEarthquake">
+          Aktivitas Gempa
+        </button>
+      </h2>
+      <div id="collapseEarthquake" class="accordion-collapse collapse" aria-labelledby="headingEarthquake" data-bs-parent="#measurement-guide">
+        <div class="accordion-body">
+          <strong>Definisi:</strong> Mengacu pada magnitudo dari aktivitas seismik terkini yang dapat memengaruhi stabilitas lereng.
+          <br>
+          <strong>Cara Mendapatkan Data:</strong> Data ini dapat diperoleh dari lembaga seismologi seperti BMKG. Gunakan magnitudo (Skala Richter) dari gempa signifikan yang terjadi baru-baru ini di sekitar lokasi. Jika tidak ada, nilai bisa dianggap rendah.
+          <br>
+          <strong>Nilai Input:</strong> Masukkan nilai magnitudo. Contoh: <code>2.5</code>.
+        </div>
+      </div>
+    </div>
+
+    <!-- Item 6: Jarak ke Air -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingWater">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseWater" aria-expanded="false" aria-controls="collapseWater">
+          Jarak ke Air
+        </button>
+      </h2>
+      <div id="collapseWater" class="accordion-collapse collapse" aria-labelledby="headingWater" data-bs-parent="#measurement-guide">
+        <div class="accordion-body">
+          <strong>Definisi:</strong> Jarak horizontal dari dasar lereng ke badan air terdekat (misalnya sungai, danau, atau laut).
+          <br>
+          <strong>Cara Mengukur:</strong> Jarak ini dapat diukur menggunakan peta, GPS, atau aplikasi pemetaan. Model ini menggunakan nilai yang telah diskalakan. Secara umum, nilai yang lebih kecil menunjukkan jarak yang lebih dekat ke air.
+          <br>
+          <strong>Nilai Input:</strong> Masukkan nilai yang telah diskalakan antara 0 dan 2. Contoh: <code>0.8</code>.
+        </div>
+      </div>
+    </div>
+
+    <!-- Item 7: Jenis Tanah -->
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="headingSoil">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSoil" aria-expanded="false" aria-controls="collapseSoil">
+          Jenis Tanah
+        </button>
+      </h2>
+      <div id="collapseSoil" class="accordion-collapse collapse" aria-labelledby="headingSoil" data-bs-parent="#measurement-guide">
+        <div class="accordion-body">
+          <strong>Definisi:</strong> Menunjukkan jenis tanah yang dominan di area lereng. Fitur ini menggunakan format <em>one-hot encoding</em>.
+          <br>
+          <strong>Cara Menentukan:</strong>
+          <ul>
+            <li><strong>Kerikil (Gravel):</strong> Tanah didominasi oleh fragmen batuan kecil dan terasa kasar.</li>
+            <li><strong>Pasir (Sand):</strong> Tanah terasa berbutir dan air sangat mudah meresap.</li>
+            <li><strong>Lanau (Silt):</strong> Partikel tanah sangat halus seperti tepung, terasa licin saat basah.</li>
+          </ul>
+          <strong>Nilai Input:</strong> Masukkan <code>1</code> untuk jenis tanah yang paling dominan dan <code>0</code> untuk dua jenis lainnya. Anda hanya bisa memilih satu jenis tanah yang dominan.
+        </div>
+      </div>
+    </div>
+  </div>
+  </div> {# End of container #}
+  </div>
+
+  <div id="pricing-section">
+  <h3 class="text-center my-4">Pilihan Paket</h3>
+  <div class="row justify-content-center my-5">
+    <!-- Free User Card -->
+    <div class="col-md-5 mb-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-header text-center bg-light">
+          <h4 class="my-0 fw-normal">Pengguna Gratis</h4>
+        </div>
+        <div class="card-body">
+          <h1 class="card-title pricing-card-title text-center">Gratis</h1>
+          <ul class="list-unstyled mt-3 mb-4">
+            <li>✓ melihat 1 hasil prediksi</li>
+            <li>✓ Akses dasar ke fitur</li>
+          </ul>
+          <button type="button" class="w-100 btn btn-lg btn-outline-primary">Daftar Gratis</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Paid User Card -->
+    <div class="col-md-5 mb-4">
+      <div class="card h-100 shadow-sm">
+        <div class="card-header text-center bg-primary text-white">
+          <h4 class="my-0 fw-normal">Pengguna Premium</h4>
+        </div>
+        <div class="card-body">
+          <h1 class="card-title pricing-card-title text-center">Rp. XXXXX<small class="text-muted fw-light">/bulan</small></h1>
+          <ul class="list-unstyled mt-3 mb-4">
+            <li>✓ melihat 4 total hasil prediksi</li>
+            <li>✓ melihat dampak yang memiliki kontribusi terbesar terbesar</li>
+            <li>✓ Dukungan prioritas</li>
+          </ul>
+          <button type="button" class="w-100 btn btn-lg btn-primary">Upgrade Sekarang</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+
+<footer class="footer mt-auto py-3 bg-light">
+  <div class="container text-center">
+    <span class="text-muted">Copyright &copy; CekLongsor 2025</span>
+  </div>
+</footer>
+
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.min.js" integrity="sha384-7qAoOXltbVP82dhxHAUje59V5r2YsVfBafyUDxEdApLPmcdhBPg1DKg1ERo0BZlK" crossorigin="anonymous"></script></body>
+</html>

@@ -1,0 +1,36 @@
+Ya, feature importance dan feature impact pada LIME memang berbeda, dan itu sangat wajar karena keduanya mengukur hal yang berbeda dalam konteks model machine learning.
+
+---
+
+Perbedaan antara Feature Importance dan Feature Impact LIME
+
+| Aspek                      | Feature Importance                                                                                           | Feature Impact (LIME)                              |
+|----------------------------|-----------------------------------------------------                                                         |---------------------------------------------------|
+| Definisi               | Ukuran seberapa penting sebuah fitur dalam model secara global (seluruh dataset).                                | Kontribusi fitur terhadap prediksi untuk satu instance (lokal). |
+| Cakupan                | Global: mengukur pengaruh fitur secara keseluruhan pada model.                                                   | Lokal: mengukur pengaruh fitur pada prediksi satu data tertentu. |
+| Sumber                 | Biasanya diambil dari atribut model (misal: featureimportances di Random Forest) atau koefisien model linear.    | Dihitung oleh LIME dengan membangun model lokal yang menjelaskan prediksi spesifik. |
+| Nilai                  | Nilai positif, biasanya dinormalisasi, merepresentasikan pentingnya fitur.                                       | Nilai positif/negatif yang menunjukkan seberapa fitur mendorong prediksi ke kelas tertentu. |
+| Interpretasi           | Fitur dengan nilai tinggi berarti fitur tersebut penting untuk prediksi model secara umum.                       | Fitur dengan nilai besar (positif/negatif) berarti fitur tersebut sangat memengaruhi prediksi instance itu saja. |
+| Penggunaan             | Untuk memahami model secara keseluruhan, memilih fitur, dan interpretasi global.                                 | Untuk menjelaskan keputusan model pada prediksi individu (misalnya menjawab “kenapa model memprediksi seperti ini?”). |
+
+---
+
+Apakah perbedaan ini masalah?
+
+Tidak, ini bukan masalah.  
+Keduanya saling melengkapi:
+Feature importance membantu Anda memahami fitur mana yang secara umum paling berpengaruh dalam model.  
+Feature impact LIME membantu Anda memahami alasan di balik prediksi spesifik pada satu data.
+
+Misalnya, sebuah fitur mungkin sangat penting secara global tapi untuk satu kasus tertentu kontribusinya kecil, atau sebaliknya.
+
+---
+
+Kesimpulan
+Jangan bingung jika hasil feature importance dan feature impact LIME berbeda.  
+Gunakan feature importance untuk analisis global dan feature impact LIME untuk penjelasan lokal.  
+Keduanya memberikan wawasan berbeda yang sama-sama berguna.
+
+---
+
+Kalau Anda ingin, saya bisa membantu membuat contoh visualisasi atau laporan yang menggabungkan kedua jenis informasi ini agar mudah dipahami!

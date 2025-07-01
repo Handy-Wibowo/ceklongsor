@@ -1,0 +1,57 @@
+# Project rill
+
+(Tambahkan deskripsi singkat tentang proyek Anda di sini. Jelaskan apa tujuannya dan apa yang dilakukannya.)
+
+## Prasyarat
+
+Pastikan Anda telah menginstal Python di sistem Anda. Proyek ini direkomendasikan untuk dijalankan dengan Python 3.8 atau yang lebih baru.
+
+- [Python 3.8+](https://www.python.org/downloads/)
+
+## Instalasi
+
+Ikuti langkah-langkah ini untuk menyiapkan lingkungan pengembangan lokal Anda.
+
+1.  **Clone repository** (Jika proyek Anda ada di Git)
+
+    ```bash
+    # Ganti dengan URL repository Anda jika ada
+    git clone https://github.com/username/project-rill.git
+    cd "Project rill"
+    ```
+
+2.  **Buat dan aktifkan Virtual Environment**
+
+    Sangat disarankan untuk menggunakan _virtual environment_ untuk mengisolasi dependensi proyek.
+
+    - Di Windows:
+
+      ```bash
+      python -m venv .venv
+      .\.venv\Scripts\activate
+      ```
+
+    - Di macOS/Linux:
+      ```bash
+      python3 -m venv .venv
+      source .venv/bin/activate
+      ```
+
+3.  **Instal dependensi**
+
+    Instal semua paket yang diperlukan yang tercantum dalam file `requirements.txt`.
+
+    ```bash
+    pip install -r requirements.txt
+    ```
+
+    > **Catatan:** Jika file `requirements.txt` tidak ada, Anda dapat membuatnya dari lingkungan yang sudah ada (seperti yang Anda berikan dalam konteks) dengan menjalankan perintah `pip freeze > requirements.txt` di dalam virtual environment yang aktif.
+
+## Menjalankan Proyek
+
+Untuk menjalankan proyek, eksekusi skrip utama dari terminal.
+
+```bash
+# Ganti 'main.py' dengan nama file entry point proyek Anda jika berbeda (misal: app.py)
+python main.py
+```

@@ -1,0 +1,41 @@
+ihat hasil prediksi, probabilitas, dan dampak fitur berikut ini: Hasil Prediksi 4 (Logistic Regression): Berpotensi Longsor | Probabilitas: 0.9692 Dampak fitur (diurutkan): Jenis tanah adalah Pasir Cukup menurunkan kemungkinan terjadinya tanah longsor Jenis tanah adalah Lanau Sedikit meningkatkan kemungkinan terjadinya tanah longsor Sudut Kemiringan (derajat) lebih dari 0.85 Sedikit meningkatkan kemungkinan terjadinya tanah longsor Saturasi Tanah kurang dari atau sama dengan 0.68 Sedikit menurunkan kemungkinan terjadinya tanah longsor Tingkat Vegetasi kurang dari atau sama dengan 0.13 Sedikit meningkatkan kemungkinan terjadinya tanah longsor Jarak ke Air antara 0.09 dan 0.25 Sedikit meningkatkan kemungkinan terjadinya tanah longsor Aktivitas Gempa antara 0.79 dan 0.87 Sedikit meningkatkan kemungkinan terjadinya tanah longsor Curah Hujan (mm) antara 0.68 dan 0.83 Sedikit meningkatkan kemungkinan terjadinya tanah longsor Jenis tanah BUKAN Kerikil Sedikit menurunkan kemungkinan terjadinya tanah longsor
+
+apakah dampak fitur sudah sesuai, karena probabilitas nya tinggi namun dampak fitur nya semuanya memberikan sedikit menurunkan dan menaikkan kemungkinan
+
+
+Gemini
+Anda telah mengamati sesuatu yang sangat jeli dan penting. Jawaban singkatnya adalah ya, dampak fitur tersebut sudah sesuai dan ini adalah perilaku yang wajar dari model penjelasan (LIME), meskipun pada awalnya terlihat kontradiktif.
+
+Mari kita bedah mengapa ini terjadi.
+
+Penjelasan Utama: Efek Kumulatif
+Alasan utama mengapa probabilitas bisa sangat tinggi (0.9692) meskipun tidak ada satu pun faktor yang dampaknya "sangat" kuat adalah karena efek kumulatif.
+
+Bayangkan Anda mendorong sebuah mobil. Satu dorongan "sedikit" mungkin tidak akan menggerakkannya. Tapi jika ada enam orang yang memberikan dorongan "sedikit" ke arah yang sama, dan hanya tiga orang yang menahan dengan dorongan "sedikit" atau "cukup", mobil itu kemungkinan besar akan bergerak maju dengan pasti.
+
+Inilah yang terjadi pada prediksi Anda:
+
+Faktor yang Meningkatkan Risiko Longsor (Mendorong Maju):
+
+Jenis tanah adalah Lanau (sedikit)
+Sudut Kemiringan > 0.85 (sedikit)
+Tingkat Vegetasi <= 0.13 (sedikit)
+Jarak ke Air antara 0.09 dan 0.25 (sedikit)
+Aktivitas Gempa antara 0.79 dan 0.87 (sedikit)
+Curah Hujan antara 0.68 dan 0.83 (sedikit)
+Faktor yang Menurunkan Risiko Longsor (Menahan):
+
+Jenis tanah adalah Pasir (cukup)
+Saturasi Tanah <= 0.68 (sedikit)
+Jenis tanah BUKAN Kerikil (sedikit)
+Meskipun setiap faktor pendorong hanya "sedikit", ada enam faktor yang secara bersama-sama mendorong prediksi ke arah "Berpotensi Longsor". Jumlah dan gabungan kekuatan mereka lebih besar daripada tiga faktor yang menahan. Model menjadi sangat yakin (probabilitas 0.9692) karena bobot bukti secara kolektif sangat kuat mengarah ke satu kesimpulan.
+
+Mengapa Tidak Ada Dampak "Sangat"?
+Ini berkaitan langsung dengan cara kita mendefinisikan "kekuatan" dampak di dalam kode app.py.
+
+Pada fungsi interpret_impact, kita menetapkan ambang batas:
+
+abs(value) < 0.01: "sedikit"
+abs(value) < 0.05: "cukup"
+abs(value) >= 0.05: "sangat"
+Ini berarti, untuk input spesifik yang Anda berikan, tidak ada satu pun fitur yang nilai kontribusinya (dihitung oleh LIME) mencapai 0.05. Faktor yang paling berpengaruh adalah "Jenis tanah adalah Pasir" yang kontribusinya berada di antara 0.01 dan 0.05, sehingga diberi label "cukup".

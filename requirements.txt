@@ -1,0 +1,13 @@
+# File ini berisi daftar pustaka (library) Python yang dibutuhkan oleh proyek.
+#
+# Untuk menghasilkan daftar dependensi secara otomatis, jalankan perintah ini di terminal Anda:
+# pip freeze > requirements.txt
+#
+# Contoh isi file:
+numpy==1.26.4
+pandas==2.2.1
+Flask==2.3.2
+Flask-Login==0.6.2
+lime==0.2.0.1
+pickle
+Random

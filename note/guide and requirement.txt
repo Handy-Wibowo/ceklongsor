@@ -1,0 +1,11 @@
+requirement:
+python 3.11
+pip
+flask
+virtualenv
+numpy
+pandas
+scikit-learn
+shap
+lime
+flask-login
