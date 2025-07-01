@@ -1,6 +1,7 @@
 # CekLongsor
 
 web app untuk prediksi longsor menggunakan Machine learning Model SVM, Gradient Boosting, Random Forest, dan Logistics Regression
+menggunakan Flask dan HTML dan CSS Bootstrap framework
 
 ## Prasyarat
 
