@@ -67,12 +67,11 @@ with open('scaler.pkl', 'rb') as f:
 
 # Load data latih untuk background LIME
 df_train = pd.read_csv('landslide_dataset.csv', encoding='latin1')
-X_train = df_train[feature_order]
-X_train_scaled = scaler.transform(X_train)
-background_data = X_train_scaled[:100]
+X_train_unscaled = df_train[feature_order].values
+background_data = X_train_unscaled[:100]
 
 explainer = LimeTabularExplainer(
-    training_data=background_data,
+    training_data=background_data, # LIME harus diinisialisasi dengan data mentah (unscaled)
     feature_names=feature_order,
     class_names=['Ga Longsor', 'Longsor'],
     discretize_continuous=True
@@ -194,18 +193,40 @@ def generate_random_inputs():
     
     return inputs
 
-def predict_and_explain_with_lime(model, X_scaled):
-    proba = model.predict_proba(X_scaled)[0, 1]
+def predict_and_explain_with_lime(model, input_data, use_scaler=False):
+    """
+    Menghasilkan prediksi dan penjelasan LIME untuk sebuah model.
+    Menangani scaling secara internal berdasarkan flag 'use_scaler'.
+    """
+    # 1. Siapkan data dan fungsi prediksi berdasarkan apakah scaling diperlukan.
+    if use_scaler:
+        # Untuk model yang memerlukan data yang di-scale (misalnya, SVM, Regresi Logistik)
+        prediction_data = scaler.transform(input_data)
+        
+        # predict_fn untuk LIME juga harus men-scale data perturbasi yang diterimanya.
+        def predict_fn_for_lime(x):
+            x_scaled = scaler.transform(x)
+            return model.predict_proba(x_scaled)
+    else:
+        # Untuk model yang bekerja pada data mentah (misalnya, model berbasis tree)
+        prediction_data = input_data
+        predict_fn_for_lime = model.predict_proba
+
+    # 2. Dapatkan prediksi model pada input yang (mungkin) telah di-scale.
+    proba = model.predict_proba(prediction_data)[0, 1]
     label = 'Berpotensi Longsor' if proba >= 0.5 else 'Berpotensi Tidak Longsor'
 
+    # 3. Hasilkan penjelasan LIME.
+    # Explainer LIME diinisialisasi dengan data unscaled, jadi ia memerlukan
+    # instance unscaled untuk dijelaskan. predict_fn_for_lime menangani scaling yang diperlukan.
     exp = explainer.explain_instance(
-        X_scaled[0],
-        model.predict_proba,
+        input_data[0],          # Berikan instance mentah (unscaled)
+        predict_fn_for_lime,    # Gunakan fungsi prediksi yang sesuai
         num_features=len(feature_order)
     )
+    
     feature_impacts = exp.as_list()
     feature_impacts_sorted = sorted(feature_impacts, key=lambda x: abs(x[1]), reverse=True)
-
     interpreted = [
         {
             'feature': prettify_feature_string(feat),
@@ -214,7 +235,6 @@ def predict_and_explain_with_lime(model, X_scaled):
         }
         for feat, val in feature_impacts_sorted
     ]
-
     return label, proba, interpreted
 
 @app.route('/')
@@ -259,21 +279,22 @@ def result():
             return f"Invalid input for {feature}: must be a number", 400
 
     X = np.array(input_list).reshape(1, -1)
-    X_scaled = scaler.transform(X)
 
     results = {}
 
-    label, proba, impacts = predict_and_explain_with_lime(svm_model, X_scaled)
+    # Model yang MENGGUNAKAN scaler
+    label, proba, impacts = predict_and_explain_with_lime(svm_model, X, use_scaler=True)
     results['SVM'] = {'label': label, 'proba': proba, 'feature_impacts': impacts}
 
-    label, proba, impacts = predict_and_explain_with_lime(rf_model, X_scaled)
+    label, proba, impacts = predict_and_explain_with_lime(lr_model, X, use_scaler=True)
+    results['Logistic Regression'] = {'label': label, 'proba': proba, 'feature_impacts': impacts}
+
+    # Model yang TIDAK menggunakan scaler
+    label, proba, impacts = predict_and_explain_with_lime(rf_model, X, use_scaler=True)
     results['Random Forest'] = {'label': label, 'proba': proba, 'feature_impacts': impacts}
 
-    label, proba, impacts = predict_and_explain_with_lime(gb_model, X_scaled)
+    label, proba, impacts = predict_and_explain_with_lime(gb_model, X, use_scaler=True)
     results['Gradient Boosting'] = {'label': label, 'proba': proba, 'feature_impacts': impacts}
-
-    label, proba, impacts = predict_and_explain_with_lime(lr_model, X_scaled)
-    results['Logistic Regression'] = {'label': label, 'proba': proba, 'feature_impacts': impacts}
 
     # Batasi hasil sesuai status login dan role user
     show_interpretation_guide = False # Default untuk pengguna gratis/tamu
