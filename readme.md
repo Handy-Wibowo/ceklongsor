@@ -26,6 +26,12 @@ Ikuti langkah-langkah ini untuk menyiapkan lingkungan pengembangan lokal Anda.
 
     Sangat disarankan untuk menggunakan _virtual environment_ untuk mengisolasi dependensi proyek.
 
+    jika belum buat gunakan command "virtualenv venv" di direktori pilihan
+    ```bash
+    virtualenv venv
+    ```
+    jika sudah buat, ketik command di bawah untuk mengaktifkan virtualenv
+    perlu di note bahwa command ini harus dimasukkan ketika membuka project
     - Di Windows:
 
       ```bash
