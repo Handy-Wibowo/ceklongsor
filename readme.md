@@ -16,8 +16,8 @@ Ikuti langkah-langkah ini untuk menyiapkan lingkungan pengembangan lokal Anda.
 
     ```bash
     # Ganti dengan URL repository Anda jika ada
-    git clone https://github.com/username/project-rill.git
-    cd "Project rill"
+    git clone https://github.com/Handy-Wibowo/ceklongsor.git
+    cd "ceklongsor"
     ```
 
 2.  **Buat dan aktifkan Virtual Environment**
@@ -53,5 +53,5 @@ Untuk menjalankan proyek, eksekusi skrip utama dari terminal.
 
 ```bash
 # Ganti 'main.py' dengan nama file entry point proyek Anda jika berbeda (misal: app.py)
-python main.py
+python app.py
 ```
