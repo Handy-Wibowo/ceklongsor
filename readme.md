@@ -1,12 +1,14 @@
-# Project rill
+# CekLongsor
 
-(Tambahkan deskripsi singkat tentang proyek Anda di sini. Jelaskan apa tujuannya dan apa yang dilakukannya.)
+web app untuk prediksi longsor menggunakan Machine learning Model SVM, Gradient Boosting, Random Forest, dan Logistics Regression
 
 ## Prasyarat
 
-Pastikan Anda telah menginstal Python di sistem Anda. Proyek ini direkomendasikan untuk dijalankan dengan Python 3.8 atau yang lebih baru.
+Pastikan Anda telah menginstal Python, pip dan virtualenv di sistem Anda. Proyek ini direkomendasikan untuk dijalankan dengan Python 3.8 atau yang lebih baru.
 
+- [pip] (https://pypi.org/project/pip/)
 - [Python 3.8+](https://www.python.org/downloads/)
+- [virtualenv] (https://virtualenv.pypa.io/en/latest/) pip install virtualenv
 
 ## Instalasi
 
