@@ -79,9 +79,9 @@ explainer = LimeTabularExplainer(
 
 def interpret_impact(value):
     abs_val = abs(value)
-    if abs_val < 0.01:
+    if abs_val < 0.005:
         strength = "sedikit"
-    elif abs_val < 0.04:  # Menurunkan ambang batas untuk 'cukup'
+    elif abs_val < 0.02:  # Menurunkan ambang batas untuk 'cukup'
         strength = "cukup"
     else:
         strength = "sangat" # Sekarang, kontribusi >= 0.04 akan dianggap 'sangat'
